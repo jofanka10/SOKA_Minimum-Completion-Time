@@ -17,17 +17,19 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MctSimulation {
 
     public static void main(String[] args) {
-        // 1. Inisialisasi CloudSim Plus
         CloudSim simulation = new CloudSim();
 
-        // 2. Buat Host dan Datacenter
         List<Host> hostList = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             List<Pe> peList = new ArrayList<>();
@@ -36,8 +38,6 @@ public class MctSimulation {
             hostList.add(host);
         }
         Datacenter datacenter = new DatacenterSimple(simulation, hostList);
-
-        // 3. Buat Broker & Virtual Machines
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
         List<Vm> vmList = new ArrayList<>();
         double[] mipsCapacities = {1000, 2500, 5000, 7500};
@@ -50,7 +50,6 @@ public class MctSimulation {
         }
         broker.submitVmList(vmList);
 
-        // 4. Baca CSV dan Konversi menjadi Cloudlet
         List<Cloudlet> cloudletList = new ArrayList<>();
         String csvFile = "GoCJ_1000_task_simulation.csv";
 
@@ -72,12 +71,10 @@ public class MctSimulation {
             return;
         }
 
-        // 5. Algoritma Penjadwalan MCT (Minimum Completion Time)
         double[] vmReadyTimes = new double[vmList.size()];
 
         for (Cloudlet cloudlet : cloudletList) {
             int bestVmIndex = 0;
- 
             double minCompletionTime = Double.MAX_VALUE;
 
             for (int i = 0; i < vmList.size(); i++) {
@@ -96,12 +93,41 @@ public class MctSimulation {
             vmReadyTimes[bestVmIndex] = minCompletionTime;
         }
 
-        // 6. Submit dan Jalankan
         broker.submitCloudletList(cloudletList);
         System.out.println("Memulai Simulasi MCT di CloudSim Plus...");
         simulation.start();
 
-        // 7. Cetak Tabel Hasil
-        new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
+        List<Cloudlet> finishedList = broker.getCloudletFinishedList();
+        new CloudletsTableBuilder(finishedList).build();
+
+        exportToCsv(finishedList, "Hasil_Simulasi_MCT.csv");
+    }
+
+    private static void exportToCsv(List<Cloudlet> list, String fileName) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+            writer.println("Cloudlet_ID,Status,VM_ID,Actual_CPU_Time,Start_Time,Finish_Time");
+
+            DecimalFormat dft = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
+            dft.applyPattern("###.##");
+
+            for (Cloudlet cloudlet : list) {
+                String status = cloudlet.getStatus().name();
+                String cpuTime = dft.format(cloudlet.getActualCpuTime());
+                String startTime = dft.format(cloudlet.getExecStartTime());
+                String finishTime = dft.format(cloudlet.getFinishTime());
+                
+                writer.println(
+                    cloudlet.getId() + "," + 
+                    status + "," + 
+                    cloudlet.getVm().getId() + "," + 
+                    cpuTime + "," + 
+                    startTime + "," + 
+                    finishTime
+                );
+            }
+            System.out.println("\n[BERHASIL] File hasil simulasi telah diekspor dan disimpan sebagai: " + fileName);
+        } catch (IOException e) {
+            System.out.println("\n[ERROR] Gagal menyimpan ke CSV: " + e.getMessage());
+        }
     }
 }
