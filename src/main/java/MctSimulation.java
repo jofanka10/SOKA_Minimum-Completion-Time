@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class MctSimulation {
 
     public static void main(String[] args) {
@@ -99,8 +102,12 @@ public class MctSimulation {
 
         List<Cloudlet> finishedList = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(finishedList).build();
-
-        exportToCsv(finishedList, "Hasil_Simulasi_MCT.csv");
+        
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String timestamp = LocalDateTime.now().format(dtf);
+        
+        String fileName = "Hasil_Simulasi_MCT_" + timestamp + ".csv"; 
+        exportToCsv(finishedList, fileName);
     }
 
     private static void exportToCsv(List<Cloudlet> list, String fileName) {
@@ -109,7 +116,8 @@ public class MctSimulation {
 
             DecimalFormat dft = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
             dft.applyPattern("###.##");
-
+            
+            double makespan = 0;
             for (Cloudlet cloudlet : list) {
                 String status = cloudlet.getStatus().name();
                 String cpuTime = dft.format(cloudlet.getActualCpuTime());
@@ -124,8 +132,16 @@ public class MctSimulation {
                     startTime + "," + 
                     finishTime
                 );
+
+                if (cloudlet.getFinishTime() > makespan) {
+                    makespan = cloudlet.getFinishTime();
+                }
             }
             System.out.println("\n[BERHASIL] File hasil simulasi telah diekspor dan disimpan sebagai: " + fileName);
+
+            writer.println();
+            writer.println("Waktu Penyelesaian Keseluruhan (Makespan),,,,," + dft.format(makespan));
+            System.out.println("\nWaktu Penyelesaian Keseluruhan (Makespan): " + dft.format(makespan) + " detik");
         } catch (IOException e) {
             System.out.println("\n[ERROR] Gagal menyimpan ke CSV: " + e.getMessage());
         }
