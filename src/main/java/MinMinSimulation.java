@@ -127,7 +127,7 @@ public class MinMinSimulation {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
         String timestamp = LocalDateTime.now().format(dtf);
         
-        String fileName = "Hasil_Simulasi_FCFS_" + timestamp + ".csv"; 
+        String fileName = "Hasil_Simulasi_MinMin_" + timestamp + ".csv"; 
         exportToCsv(finishedList, fileName);
     }
 
