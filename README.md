@@ -1,10 +1,10 @@
-# Minimum Completion Time (MCT) — Cloud Task Scheduling
+# Minimum Completion Time (MCT) - Cloud Task Scheduling
 
 Implementasi dan ujicoba algoritma **Minimum Completion Time (MCT)** untuk penjadwalan task independen di lingkungan cloud tersimulasi, menggunakan [CloudSim Plus](http://cloudsimplus.org/) 7.3.0. Dibuat untuk mata kuliah SOKA, Tugas Minggu 4.
 
-Dua algoritma pembanding — **FCFS** dan **Min-Min** — turut diimplementasikan untuk memperkuat analisis perbandingan.
+Dua algoritma pembanding, yaitu FCFS dan Min-Min turut diimplementasikan untuk memperkuat analisis perbandingan.
 
-## Kelompok 2
+## **Kelompok 2**
 
 | No | Nama                              | NRP        |
 |----|-----------------------------------|------------|
@@ -14,7 +14,7 @@ Dua algoritma pembanding — **FCFS** dan **Min-Min** — turut diimplementasika
 | 4  | Angga Firmansyah                  | 5027241062 |
 | 5  | Jofanka Al-kautsar Pangestu Abady | 5027241107 |
 
-## Daftar Isi
+## **Daftar Isi**
 
 - [Algoritma](#algoritma)
 - [Arsitektur Simulasi](#arsitektur-simulasi)
@@ -34,8 +34,12 @@ Dua algoritma pembanding — **FCFS** dan **Min-Min** — turut diimplementasika
 CT(Ti, Vj) = RT(Vj) + ET(Ti, Vj)
 ```
 
-- `RT(Vj)` — ready time VM j (kapan VM tersebut bebas)
-- `ET(Ti, Vj)` — waktu eksekusi task i pada VM j = `length(Ti) / MIPS(Vj)`
+```math
+CT(T_i, V_j) = RT(V_j) + ET(T_i, V_j)
+```
+
+- `RT(Vj)` adalah ready time VM j (kapan VM tersebut bebas)
+- `ET(Ti, Vj)` yaitu waktu eksekusi task i pada VM j = `length(Ti) / MIPS(Vj)`
 - Jika beberapa VM memberi CT yang sama, dipilih VM dengan **indeks terkecil**
 
 ```
@@ -52,7 +56,7 @@ untuk setiap task i di U:
 makespan = max_j( ready[j] )
 ```
 
-MCT dipilih sebagai algoritma utama karena (1) memperhitungkan beban VM saat ini sehingga lebih adaptif pada lingkungan heterogen dibanding FCFS, dan (2) kompleksitasnya `O(n·m)` — lebih ringan dibanding Min-Min yang `O(n²·m)`.
+MCT dipilih sebagai algoritma utama karena (1) memperhitungkan beban VM saat ini sehingga lebih adaptif pada lingkungan heterogen dibanding FCFS, dan (2) kompleksitasnya `O(n·m)` lebih ringan dibanding Min-Min yang `O(n²·m)`.
 
 | Algoritma | Cara memilih | Kompleksitas |
 |---|---|---|
@@ -107,7 +111,7 @@ Seluruh 1.000 cloudlet berstatus **SUCCESS** pada ketiga run.
 | FCFS | 7.724,00 | +1,46% | 49 / 148 / 328 / 475 |
 | Min-Min | 7.781,37 | +2,20% | 61 / 155 / 313 / 471 |
 
-**Peringkat:** MCT < FCFS < Min-Min. Selisih antar-algoritma kecil (<1,2%), ketiganya berada dalam 1–2,2% dari batas bawah teoritis.
+**Peringkat:** MCT < FCFS < Min-Min. Selisih antar-algoritma kecil (<1,2%), ketiganya berada dalam 1-2,2% dari batas bawah teoritis.
 
 Metrik tambahan untuk MCT:
 
@@ -131,7 +135,7 @@ Setiap algoritma direplikasi manual (Python, logika identik dengan kode Java) da
 | FCFS | 7.628,47 | 7.724,00 | 1,25% |
 | Min-Min | 7.686,67 | 7.781,37 | 1,23% |
 
-Selisih 0,7–1,3% konsisten di ketiganya, sejalan dengan jeda minimum antar-event bawaan CloudSim Plus (`minTimeBetweenEvents` = 0,1 detik). Khusus MCT, pemetaan task→VM hasil hitungan manual dibandingkan satu per satu dengan keluaran simulator: **kecocokan 100%**.
+Selisih 0,7-1,3% konsisten di ketiganya, sejalan dengan jeda minimum antar-event bawaan CloudSim Plus (`minTimeBetweenEvents` = 0,1 detik). Khusus MCT, pemetaan task→VM hasil hitungan manual dibandingkan satu per satu dengan keluaran simulator: **kecocokan 100%**.
 
 ## Struktur Repo
 
