@@ -30,16 +30,12 @@ Dua algoritma pembanding, yaitu FCFS dan Min-Min turut diimplementasikan untuk m
 
 **Minimum Completion Time (MCT)** memproses task satu per satu sesuai urutan kedatangan, dan memetakan setiap task ke VM yang memberikan *completion time* paling awal.
 
-```
-CT(Ti, Vj) = RT(Vj) + ET(Ti, Vj)
-```
-
 ```math
 CT(T_i, V_j) = RT(V_j) + ET(T_i, V_j)
 ```
 
-- `RT(Vj)` adalah ready time VM j (kapan VM tersebut bebas)
-- `ET(Ti, Vj)` yaitu waktu eksekusi task i pada VM j = `length(Ti) / MIPS(Vj)`
+- $`RT(V_j)`$ : ready time VM j (kapan VM tersebut bebas)
+- $`ET(T_i, V_j)`$ : waktu eksekusi task i pada VM j = $\mathrm{length}(T_i) / \mathrm{MIPS}(V_j)$
 - Jika beberapa VM memberi CT yang sama, dipilih VM dengan **indeks terkecil**
 
 ```
@@ -60,9 +56,9 @@ MCT dipilih sebagai algoritma utama karena (1) memperhitungkan beban VM saat ini
 
 | Algoritma | Cara memilih | Kompleksitas |
 |---|---|---|
-| **MCT** (utama) | VM dengan completion time paling awal, per task sesuai urutan | O(n·m) |
-| FCFS (baseline) | VM dengan ready time tercepat, tanpa melihat lama eksekusi | ~O(n) |
-| Min-Min (pembanding) | Dari semua task tersisa, pilih completion time minimum paling kecil dulu | O(n²·m) |
+| **MCT** (utama) | VM dengan completion time paling awal, per task sesuai urutan | $O(n \cdot m)$ |
+| FCFS (baseline) | VM dengan ready time tercepat, tanpa melihat lama eksekusi | $\sim O(n)$ |
+| Min-Min (pembanding) | Dari semua task tersisa, pilih completion time minimum paling kecil dulu | $O(n^2 \cdot m)$ |
 
 ## Arsitektur Simulasi
 
